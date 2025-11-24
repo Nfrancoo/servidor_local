@@ -24,6 +24,30 @@ app.get("/buscar", async (req, res) => {
   }
 });
 
+app.get("/reverse", async (req, res) => {
+  try {
+    const lat = req.query.lat;
+    const lon = req.query.lon;
+    
+    // URL de Nominatim para Reverse Geocoding
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`;
+
+    const response = await fetch(url, {
+      headers: {
+        // Nominatim exige un User-Agent válido
+        "User-Agent": "MiAppIonic/1.0 (tucorreo@gmail.com)" 
+      }
+    });
+
+    const data = await response.json();
+    res.json(data);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en reverse geocoding" });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
